@@ -14,11 +14,23 @@ class Character {
   // Update position of the character
   update(dt=0) {
 //    checkCollisions();
+
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
     // all computer.
     this.x=this.x+(this.speed*dt);
-  };
+    let collision = true;
+    for(let i=0; i<allEnemies.length; i++) {
+
+      (player.x<(allEnemies[i].x+101) && collision) ? collision = true : collision = false;
+      ((player.x>allEnemies[i].x) && collision) ? collision = true : collision = false;
+      (((player.y+13)<allEnemies[i].y) && collision) ? collision = true : collision = false;
+      ((player.y-41)>(allEnemies[i].y-121) && collision) ? collision = true : collision = false;
+    };
+    console.log(collision);
+  }
+
+
   // Draw character on screen
   render() {
       ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
@@ -83,7 +95,7 @@ function random(min,max){
 const yEnemiesPositions = [63,146,229];
 let player = new Player(205,373,0);
 let allEnemies = [];
-for (let i=0; i<random(5,7); i++) {
+for (let i=0; i<random(1,1); i++) {
   allEnemies.push(new Enemy(-(random(1,150)-1),yEnemiesPositions[random(1,3)-1],random(20,100)));
 }
 //new Enemy(-60,229,10),new Enemy(-120,146,85), new Enemy(0,63,55)];
