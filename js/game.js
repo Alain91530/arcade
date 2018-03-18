@@ -3,11 +3,12 @@
 class Character {
   constructor(x = 0, y = 0, speed, sprite = 'images/enemy-bug.png') {
 
-      // Position x,y on the scree
+      // Position x,y on the screen
       this.x = x;
       this.y = y;
-      // Image of the enemy
+      // Image of the character
       this.sprite = sprite;
+      // Moving speed of the character
       this.speed = speed;
   }
   // Update position of the character
@@ -16,7 +17,6 @@ class Character {
     // which will ensure the game runs at the same speed for
     // all computer.
     this.x=this.x+(this.speed*dt);
-  //    this.y=this.y+dt;
   };
   // Draw character on screen
   render() {
@@ -27,8 +27,20 @@ class Character {
 class Enemy extends Character {
   constructor(x, y, sprite) {
     super(x, y, sprite);
+    this.xStart = x;
   };
 
+  comeBack() {
+//    console.log(this.x);
+    if (this.x>=505) {
+      this.x = this.xStart;
+    }
+  }
+
+  update(dt) {
+  super.update(dt);
+  this.comeBack();
+  }
 }
 
 class Player extends Character {
@@ -40,12 +52,30 @@ class Player extends Character {
   }
 
   handleInput(key) {
-    console.log(key);
+    switch (key) {
+      case 'up': {
+        this.y = this.y - 100;
+        break;
+      }
+      case  'down': {
+        this.y = this.y + 100;
+        break;
+      }
+      case 'left': {
+        this.x = this.x - 100;
+        break;
+      }
+      case 'right': {
+        this.x = this.x+100;
+        break;
+      }
+    }
+//    console.log(key);
   }
 }
 
 let player = new Player(205,400,0)
-let allEnemies = [new Enemy(-60,200,10), new Enemy(0,100,15)];
+let allEnemies = [new Enemy(-60,200,10), new Enemy(0,100,55)];
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
