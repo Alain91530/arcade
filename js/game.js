@@ -13,6 +13,7 @@ class Character {
   }
   // Update position of the character
   update(dt=0) {
+//    checkCollisions();
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
     // all computer.
@@ -50,9 +51,7 @@ class Player extends Character {
     this.y = y;
     this.sprite = 'images/char-boy.png'
   }
-  checkMove() {
 
-  }
   handleInput(key) {
     switch (key) {
       case 'up': {
@@ -76,8 +75,8 @@ class Player extends Character {
   }
 }
 
-let player = new Player(205,400,0)
-let allEnemies = [new Enemy(-60,200,10), new Enemy(0,100,55)];
+let player = new Player(205,373,0)
+let allEnemies = [new Enemy(-60,229,10),new Enemy(-120,146,85), new Enemy(0,63,55)];
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
