@@ -50,23 +50,25 @@ class Player extends Character {
     this.y = y;
     this.sprite = 'images/char-boy.png'
   }
+  checkMove() {
 
+  }
   handleInput(key) {
     switch (key) {
       case 'up': {
-        this.y = this.y - 100;
+        (this.y-83>-15) ? this.y -= 83 : false;
         break;
       }
       case  'down': {
-        this.y = this.y + 100;
+        (this.y+83<=400) ? this.y += 83 : false;
         break;
       }
       case 'left': {
-        this.x = this.x - 100;
+        (this.x-100>=5) ? this.x -= 100 : false;
         break;
       }
       case 'right': {
-        this.x = this.x+100;
+        (this.x+100<=405) ? this.x +=100 : false;
         break;
       }
     }
