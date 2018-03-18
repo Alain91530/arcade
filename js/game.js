@@ -1,5 +1,5 @@
 // Super class of charaters of the game
-// will be used to create enemies and play classes
+// will be used to create enemies and player classes
 class Character {
   constructor(x = 0, y = 0, speed, sprite = 'images/enemy-bug.png') {
 
@@ -25,25 +25,27 @@ class Character {
   };
 }
 
+// Enemy sub-class
 class Enemy extends Character {
   constructor(x, y, sprite) {
     super(x, y, sprite);
     this.xStart = x;
   };
 
+// Method allowing enemies to restart when they have crossed the canvas
   comeBack() {
-//    console.log(this.x);
     if (this.x>=505) {
       this.x = this.xStart;
     }
   }
-
+// Change in Character update method making enemies come back
   update(dt) {
   super.update(dt);
   this.comeBack();
   }
 }
 
+// Player sub-class
 class Player extends Character {
   constructor(x, y, sprite) {
     super(x, y, sprite);
@@ -52,6 +54,7 @@ class Player extends Character {
     this.sprite = 'images/char-boy.png'
   }
 
+// Method to handle the moves of player
   handleInput(key) {
     switch (key) {
       case 'up': {
@@ -71,12 +74,19 @@ class Player extends Character {
         break;
       }
     }
-//    console.log(key);
   }
 }
-
-let player = new Player(205,373,0)
-let allEnemies = [new Enemy(-60,229,10),new Enemy(-120,146,85), new Enemy(0,63,55)];
+// Function generating an integer n with min <= n <= max
+function random(min,max){
+  return min+Math.floor(Math.random()*(max-min+1));
+}
+const yEnemiesPositions = [63,146,229];
+let player = new Player(205,373,0);
+let allEnemies = [];
+for (let i=0; i<random(5,7); i++) {
+  allEnemies.push(new Enemy(-(random(1,150)-1),yEnemiesPositions[random(1,3)-1],random(20,100)));
+}
+//new Enemy(-60,229,10),new Enemy(-120,146,85), new Enemy(0,63,55)];
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
