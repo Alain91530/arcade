@@ -20,13 +20,16 @@ class Character {
     // all computer.
     this.x=this.x+(this.speed*dt);
     let collision = true;
-    for(let i=0; i<allEnemies.length; i++) {
+    let i=0
+    while (collision && i<allEnemies.length) {
+    for(i=0; i<allEnemies.length; i++) {
 
       (player.x<(allEnemies[i].x+101) && collision) ? collision = true : collision = false;
       ((player.x>allEnemies[i].x) && collision) ? collision = true : collision = false;
       (((player.y+13)<allEnemies[i].y) && collision) ? collision = true : collision = false;
       ((player.y-41)>(allEnemies[i].y-121) && collision) ? collision = true : collision = false;
     };
+  };
     console.log(collision);
   }
 
@@ -88,15 +91,15 @@ class Player extends Character {
     }
   }
 }
-// Function generating an integer n with min <= n <= max
+// Function generating an positive integer n with 0 <= min <= n <= max
 function random(min,max){
-  return min+Math.floor(Math.random()*(max-min+1));
+  return min+Math.floor(Math.random()*(max+2-(min+1)));
 }
 const yEnemiesPositions = [63,146,229];
 let player = new Player(205,373,0);
 let allEnemies = [];
 for (let i=0; i<random(1,1); i++) {
-  allEnemies.push(new Enemy(-(random(1,150)-1),yEnemiesPositions[random(1,3)-1],random(20,100)));
+  allEnemies.push(new Enemy(-(random(0,150)),yEnemiesPositions[random(1,3)-1],random(20,100)));
 }
 //new Enemy(-60,229,10),new Enemy(-120,146,85), new Enemy(0,63,55)];
 
