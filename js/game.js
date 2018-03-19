@@ -19,18 +19,19 @@ class Character {
     // which will ensure the game runs at the same speed for
     // all computer.
     this.x=this.x+(this.speed*dt);
-    let collision = true;
     let i=0
-    while (collision && i<allEnemies.length) {
     for(i=0; i<allEnemies.length; i++) {
-
+      let collision = true;
       (player.x<(allEnemies[i].x+101) && collision) ? collision = true : collision = false;
       ((player.x>allEnemies[i].x) && collision) ? collision = true : collision = false;
       (((player.y+13)<allEnemies[i].y) && collision) ? collision = true : collision = false;
       ((player.y-41)>(allEnemies[i].y-121) && collision) ? collision = true : collision = false;
+      if (collision) {
+        player.x = 205;
+        player.y = 373;
+      };
+
     };
-  };
-    console.log(collision);
   }
 
 
@@ -98,7 +99,7 @@ function random(min,max){
 const yEnemiesPositions = [63,146,229];
 let player = new Player(205,373,0);
 let allEnemies = [];
-for (let i=0; i<random(1,1); i++) {
+for (let i=0; i<random(3,5); i++) {
   allEnemies.push(new Enemy(-(random(0,150)),yEnemiesPositions[random(1,3)-1],random(20,100)));
 }
 //new Enemy(-60,229,10),new Enemy(-120,146,85), new Enemy(0,63,55)];
