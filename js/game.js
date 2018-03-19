@@ -1,40 +1,20 @@
 // Super class of charaters of the game
 // will be used to create enemies and player classes
+
 class Character {
   constructor(x = 0, y = 0, speed, sprite = 'images/enemy-bug.png') {
 
       // Position x,y on the screen
       this.x = x;
       this.y = y;
+      //width and Hight of the charater for collision detection
+      this.width = 70;
+      this.height = 50;
       // Image of the character
       this.sprite = sprite;
       // Moving speed of the character
       this.speed = speed;
   }
-  // Update position of the character
-  update(dt=0) {
-//    checkCollisions();
-
-    // You should multiply any movement by the dt parameter
-    // which will ensure the game runs at the same speed for
-    // all computer.
-    this.x=this.x+(this.speed*dt);
-    let i=0
-    for(i=0; i<allEnemies.length; i++) {
-      let collision = true;
-      (player.x<(allEnemies[i].x+101) && collision) ? collision = true : collision = false;
-      ((player.x>allEnemies[i].x) && collision) ? collision = true : collision = false;
-      (((player.y+13)<allEnemies[i].y) && collision) ? collision = true : collision = false;
-      ((player.y-41)>(allEnemies[i].y-121) && collision) ? collision = true : collision = false;
-      if (collision) {
-        player.x = 205;
-        player.y = 373;
-      };
-
-    };
-  }
-
-
   // Draw character on screen
   render() {
       ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
@@ -48,16 +28,11 @@ class Enemy extends Character {
     this.xStart = x;
   };
 
-// Method allowing enemies to restart when they have crossed the canvas
-  comeBack() {
-    if (this.x>=505) {
-      this.x = this.xStart;
-    }
-  }
-// Change in Character update method making enemies come back
-  update(dt) {
-  super.update(dt);
-  this.comeBack();
+  // Update position of the enemies
+  // Move the enemy and then check for collision.
+  update(dt=100) {
+    (this.x>505) ? this.x = this.xStart : this.x=this.x+(this.speed*dt);
+    checkCollisions ();
   }
 }
 
@@ -67,8 +42,12 @@ class Player extends Character {
     super(x, y, sprite);
     this.x = x;
     this.y = y;
+    this.width = 40;
     this.sprite = 'images/char-boy.png'
   }
+
+// The player doesn't move by itself so its update method do nothing.
+  update(dt) {};
 
 // Method to handle the moves of player
   handleInput(key) {
@@ -92,17 +71,42 @@ class Player extends Character {
     }
   }
 }
+
+// Detections of collision
+function checkCollisions() {
+for( let i=0; i<allEnemies.length; i++) {
+let  enemyChecked =allEnemies[i];
+  if (player.x<enemyChecked.x+enemyChecked.width
+    && player.x+player.width>enemyChecked.x
+    && player.y<enemyChecked.y+enemyChecked.height
+    && player.y+player.height>enemyChecked.y) {
+      player.x = 205;
+      player.y = 373;
+  };
+
+};
+}
+
 // Function generating an positive integer n with 0 <= min <= n <= max
 function random(min,max){
   return min+Math.floor(Math.random()*(max+2-(min+1)));
 }
+
+// Array used to pick random lanes for enemies at beginning of game.
 const yEnemiesPositions = [63,146,229];
-let player = new Player(205,373,0);
+
+// Instance of player at a fix position.
+let player = new Player(205,395,0);
+
+/* Instances of enemies
+   - Random number and for each:
+      - Random speed
+      - Random lane
+*/
 let allEnemies = [];
 for (let i=0; i<random(3,5); i++) {
-  allEnemies.push(new Enemy(-(random(0,150)),yEnemiesPositions[random(1,3)-1],random(20,100)));
+  allEnemies.push(new Enemy(-(random(0,150)),yEnemiesPositions[random(0,2)],random(20,100)));
 }
-//new Enemy(-60,229,10),new Enemy(-120,146,85), new Enemy(0,63,55)];
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
