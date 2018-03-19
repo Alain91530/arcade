@@ -43,6 +43,7 @@ class Player extends Character {
     this.x = x;
     this.y = y;
     this.width = 40;
+    this.life = 3;
     this.sprite = 'images/char-boy.png'
   }
 
@@ -53,7 +54,7 @@ class Player extends Character {
   handleInput(key) {
     switch (key) {
       case 'up': {
-        (this.y-83>-15) ? this.y -= 83 : false;
+        (this.y-83>-15) ? this.y -= 83 : endGame(true);
         break;
       }
       case  'down': {
@@ -74,17 +75,23 @@ class Player extends Character {
 
 // Detections of collision
 function checkCollisions() {
-for( let i=0; i<allEnemies.length; i++) {
-let  enemyChecked =allEnemies[i];
-  if (player.x<enemyChecked.x+enemyChecked.width
-    && player.x+player.width>enemyChecked.x
-    && player.y<enemyChecked.y+enemyChecked.height
-    && player.y+player.height>enemyChecked.y) {
+  for(let i=0; i<allEnemies.length; i++) {
+    let  enemyChecked =allEnemies[i];
+    if (player.x<enemyChecked.x+enemyChecked.width
+      && player.x+player.width>enemyChecked.x
+      && player.y<enemyChecked.y+enemyChecked.height
+      && player.y+player.height>enemyChecked.y)
+    {
       player.x = 205;
       player.y = 373;
+      player.life -= 1;
+      (player.life==0) ? endGame(false) : false;
+    };
   };
+}
 
-};
+function endGame(win) {
+  (win) ? console.log('you win') : console.log('You lost')
 }
 
 // Function generating an positive integer n with 0 <= min <= n <= max
