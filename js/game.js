@@ -3,6 +3,7 @@ class Game {
     this.level = 1;
     this.run = true;
     this.pause = false;
+    this.popUp = false;
   }
 
   pauseGame() {
@@ -19,6 +20,16 @@ class Game {
       };
     };
   };
+  update() {
+
+  }
+  render() {
+    if(this.pause) {
+      ctx.globalAlpha = 0.9;
+      ctx.fillStyle = 'black';
+      ctx.fillRect(20,80,465,475);
+    }
+  }
 
   endGame(win) {
     (win) ? console.log('you win') : console.log('You lost');
@@ -67,7 +78,7 @@ class Enemy extends Character {
 
   // Update position of the enemies
   // Move the enemy and then check for collision.
-  update(dt=100) {
+  update(dt) {
     (this.x>505) ? this.x = this.xStart : this.x=this.x+(this.speed*dt);
     checkCollisions ();
   }
@@ -122,6 +133,7 @@ function checkCollisions() {
       player.x = 205;
       player.y = 373;
       player.life -= 1;
+      updateScore();
       (player.life==0) ? endGame(false) : false;
     };
   };
@@ -132,12 +144,13 @@ function endGame(win) {
 }
 // Function to handle the timer
 function changeTimer() {
-  (game.pause==false) ? timer+=1 : false;
+  (!game.pause) ? timer+=1 : false;
   updateScore();
 };
 
 // Function updating the score (time, lives and diamond)
 function updateScore() {
+  let lives = document.getElementById('lives');
 //  Update timer
   const hrs = Math.trunc(timer/3600);
   const mins = (Math.trunc(timer/60)-(hrs*60));
@@ -146,7 +159,15 @@ function updateScore() {
   (mins<10) ? stringTime = stringTime+'0'+mins+':' : stringTime = stringTime+mins+':';
   (secs<10) ? stringTime = stringTime+'0'+secs : stringTime = stringTime+secs;
   document.getElementById('time').textContent = stringTime;
+// Update lives
+  while (lives.firstChild) {
+    lives.removeChild(lives.firstChild);
+  }
+  for(let nblives = 0; nblives<player.life; nblives++ ) {
+    lives.innerHTML = lives.innerHTML+'<img src="images/Heart.png" height="70" alt="">';
+  }
 }
+
 
 // Function generating an positive integer n with 0 <= min <= n <= max
 function random(min,max){
