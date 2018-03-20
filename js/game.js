@@ -1,30 +1,31 @@
 class Game {
   constructor() {
     this.level = 1;
-    this.run = true;
-    this.pause = false;
+    this.state = 'running';
     this.popUp = false;
   }
 
-  pauseGame() {
-    if (this.pause) {
-      this.pause = false;
-      for (let enemy of allEnemies) {
-       enemy.speed = enemy.speedStart;
-      };
+  changeState(state) {
+    this.state=state
+    switch (this.state) {
+      case 'paused':
+      case 'stopped': {
+        for (let enemy of allEnemies) {
+         enemy.speed = 0;
+        };
+        break;
+      }
+      case 'running': {
+        for (let enemy of allEnemies) {
+          enemy.speed = enemy.speedStart;
+        };
+        break;
+      }
     }
-    else {
-      this.pause = true;
-      for (let enemy of allEnemies) {
-        enemy.speed = 0;
-      };
-    };
   };
-  update() {
 
-  }
   render() {
-    if(this.pause) {
+    if(this.state=='paused') {
       ctx.fillStyle = 'rgba(0,0,0,0.7';
       ctx.fillRect(20,80,465,475);
       ctx.fillStyle = 'white';
@@ -40,13 +41,26 @@ class Game {
   };
 
   handleInput(key) {
-    if (this.run) {
-      (key=='pause') ? this.pauseGame() : player.move(key);
+    switch (key) {
+      case "pause": {
+        if (this.state=="running") {
+          this.changeState("paused");
+          break
+        };
+        if (this.state=="paused") {
+          this.changeState("running")
+        };
+  //      break;
+      }
+      case "run": {
+        if (this.state=="stopped") {this.changeState("running")};
+        break;
+      }
+      default: {
+        if (this.state=="running") {player.move(key)};
+      }
     }
-    else {
-      player.move(key);
-    };
-  }
+  };
 }
 
 // Super class of charaters of the game
@@ -149,7 +163,7 @@ function endGame(win) {
 }
 // Function to handle the timer
 function changeTimer() {
-  (!game.pause) ? timer+=1 : false;
+  (game.state=='running') ? timer+=1 : false;
   updateScore();
 };
 

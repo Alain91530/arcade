@@ -95,7 +95,7 @@ var Engine = (function(global) {
         });
         player.update();
         // Update with a popup if needed
-        game.update();
+//        game.update();
     }
 
     /* This function initially draws the "game level", it will then call
