@@ -25,9 +25,13 @@ class Game {
   }
   render() {
     if(this.pause) {
-      ctx.globalAlpha = 0.9;
-      ctx.fillStyle = 'black';
+      ctx.fillStyle = 'rgba(0,0,0,0.7';
       ctx.fillRect(20,80,465,475);
+      ctx.fillStyle = 'white';
+      ctx.font = '35px arial'
+      ctx.fillText('GAME PAUSED',130,280);
+      ctx.font = '25px arial';
+      ctx.fillText('Hit the p key again to resume',100,320);
     }
   }
 
@@ -64,6 +68,7 @@ class Character {
   }
   // Draw character on screen
   render() {
+      ctx.globalAlpha = 1;
       ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
   };
 }

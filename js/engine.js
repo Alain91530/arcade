@@ -94,6 +94,7 @@ var Engine = (function(global) {
             enemy.update(dt);
         });
         player.update();
+        // Update with a popup if needed
         game.update();
     }
 
