@@ -1,3 +1,23 @@
 body {
     text-align: center;
 }
+#score {
+  display: flex;
+  flex-flow: wrap;
+}
+
+#time {
+  font-size: 2em;
+  width: 33.33%;
+}
+
+#lives {
+  width: 33.33%
+}
+
+#gems {
+  width: 33.33%
+}
+ #score {
+   text-align: center;
+ }

@@ -1,3 +1,39 @@
+class Game {
+  constructor() {
+    this.level = 1;
+    this.run = true;
+    this.pause = false;
+  }
+
+  pauseGame() {
+    if (this.pause) {
+      this.pause = false;
+      for (let enemy of allEnemies) {
+       enemy.speed = enemy.speedStart;
+      };
+    }
+    else {
+      this.pause = true;
+      for (let enemy of allEnemies) {
+        enemy.speed = 0;
+      };
+    };
+  };
+
+  endGame(win) {
+    (win) ? console.log('you win') : console.log('You lost');
+  };
+
+  handleInput(key) {
+    if (this.run) {
+      (key=='pause') ? this.pauseGame() : player.move(key);
+    }
+    else {
+      player.move(key);
+    };
+  }
+}
+
 // Super class of charaters of the game
 // will be used to create enemies and player classes
 
@@ -23,9 +59,10 @@ class Character {
 
 // Enemy sub-class
 class Enemy extends Character {
-  constructor(x, y, sprite) {
-    super(x, y, sprite);
+  constructor(x, y,speed, sprite) {
+    super(x, y, speed, sprite);
     this.xStart = x;
+    this.speedStart = speed;
   };
 
   // Update position of the enemies
@@ -51,7 +88,7 @@ class Player extends Character {
   update(dt) {};
 
 // Method to handle the moves of player
-  handleInput(key) {
+  move(key) {
     switch (key) {
       case 'up': {
         (this.y-83>-15) ? this.y -= 83 : endGame(true);
@@ -93,6 +130,11 @@ function checkCollisions() {
 function endGame(win) {
   (win) ? console.log('you win') : console.log('You lost')
 }
+// Function to handle the timer
+function changeTimer() {
+  (game.pause==false) ? timer+=1 : false;
+  console.log(timer);
+};
 
 // Function generating an positive integer n with 0 <= min <= n <= max
 function random(min,max){
@@ -101,6 +143,10 @@ function random(min,max){
 
 // Array used to pick random lanes for enemies at beginning of game.
 const yEnemiesPositions = [63,146,229];
+
+// Instance of the game
+let game = new Game;
+let timer = 0;
 
 // Instance of player at a fix position.
 let player = new Player(205,395,0);
@@ -114,16 +160,19 @@ let allEnemies = [];
 for (let i=0; i<random(3,5); i++) {
   allEnemies.push(new Enemy(-(random(0,150)),yEnemiesPositions[random(0,2)],random(20,100)));
 }
+window.setInterval(changeTimer, 1000);
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
 document.addEventListener('keyup', function(e) {
     var allowedKeys = {
+        13: 'start',
         37: 'left',
         38: 'up',
         39: 'right',
-        40: 'down'
+        40: 'down',
+        80: 'pause'
     };
 
-    player.handleInput(allowedKeys[e.keyCode]);
+    game.handleInput(allowedKeys[e.keyCode]);
 });
