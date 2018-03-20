@@ -133,8 +133,20 @@ function endGame(win) {
 // Function to handle the timer
 function changeTimer() {
   (game.pause==false) ? timer+=1 : false;
-  console.log(timer);
+  updateScore();
 };
+
+// Function updating the score (time, lives and diamond)
+function updateScore() {
+//  Update timer
+  const hrs = Math.trunc(timer/3600);
+  const mins = (Math.trunc(timer/60)-(hrs*60));
+  const secs = (timer-((hrs*3600)+(mins*60)));
+  (hrs<10) ? stringTime = '0'+hrs+':' : stringTime = hrs+':';
+  (mins<10) ? stringTime = stringTime+'0'+mins+':' : stringTime = stringTime+mins+':';
+  (secs<10) ? stringTime = stringTime+'0'+secs : stringTime = stringTime+secs;
+  document.getElementById('time').textContent = stringTime;
+}
 
 // Function generating an positive integer n with 0 <= min <= n <= max
 function random(min,max){
