@@ -1,6 +1,7 @@
 class Game {
   constructor() {
-    this.level = 1;
+    this.level = 0;
+    this.levels = ['lightgreen','orange','red'];
     this.state = 'stopped';
     this.win = false;
     this.players = ['images/char-boy.png',
@@ -54,12 +55,20 @@ class Game {
         ctx.fillText('Hit space to start a new game',100,320);
       };
       if (this.state=='stopped') {
-        ctx.fillText('CROSS THE ROAD!',100,280);
+        ctx.fillText('CROSS THE ROAD!',95,180);
         ctx.font = '25px arial';
-        ctx.fillText('Hit space to start a new game',100,320);
-        ctx.fillText('Choose player with left and right arrows',30,440)
-        ctx.strokeStyle = 'red';
+        ctx.fillText('Hit space to start a new game',90,230);
+        ctx.fillText('Up and down arrows set difficulty',65,300);
+        ctx.fillStyle = this.levels[this.level];
+        ctx.arc(250,350,20,0,2*Math.PI);
+        ctx.fill();
         ctx.lineWidth = 5;
+        ctx.strokeStyle='black';
+        ctx.fillStyle = 'white';
+        ctx.stroke();
+
+        ctx.fillText('Choose player with left and right arrows',30,430);
+        ctx.strokeStyle = 'red';
         ctx.lineJoin = 'round'
         ctx.strokeRect(205,448,96,100);
         ctx.drawImage(Resources.get(player.sprite), 205, 395);
