@@ -58,6 +58,10 @@ class Game {
         ctx.font = '25px arial';
         ctx.fillText('Hit space to start a new game',100,320);
         ctx.fillText('Choose player with left and right arrows',30,440)
+        ctx.strokeStyle = 'red';
+        ctx.lineWidth = 5;
+        ctx.lineJoin = 'round'
+        ctx.strokeRect(205,448,96,100);
         ctx.drawImage(Resources.get(player.sprite), 205, 395);
       };
     };
