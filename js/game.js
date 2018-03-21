@@ -52,13 +52,17 @@ class Game {
       if (this.state=='lost') {
         ctx.fillText('GAME OVER !',130,280);
         ctx.font = '25px arial';
-        ctx.fillText('Hit space to start a new game',100,320);
+        ctx.fillText('Hit space to start a new game',80,320);
       };
+      /* Set the starting popup with the possible choices for
+            - Game difficulty
+            - Character choices
+      */
       if (this.state=='stopped') {
         ctx.fillText('CROSS THE ROAD!',95,180);
         ctx.font = '25px arial';
         ctx.fillText('Hit space to start a new game',90,230);
-        ctx.fillText('Up and down arrows set difficulty',65,300);
+        ctx.fillText('Use + key to set game difficulty',80,300);
         ctx.fillStyle = this.levels[this.level];
         ctx.arc(250,350,20,0,2*Math.PI);
         ctx.fill();
@@ -66,8 +70,7 @@ class Game {
         ctx.strokeStyle='black';
         ctx.fillStyle = 'white';
         ctx.stroke();
-
-        ctx.fillText('Choose player with left and right arrows',30,430);
+        ctx.fillText('Choose player with Enter key',90,430);
         ctx.strokeStyle = 'red';
         ctx.lineJoin = 'round'
         ctx.strokeRect(205,448,96,100);
@@ -76,9 +79,9 @@ class Game {
     };
   }
 
-  endGame(win) {
-    (win) ? console.log('you win') : console.log('You lost');
-  };
+//  endGame(win) {
+//    (win) ? console.log('you win') : console.log('You lost');
+//  };
 
   handleInput(key) {
     switch (key) {
@@ -96,20 +99,20 @@ class Game {
         if (this.state=="stopped") {this.changeState("running")};
       break;
       }
-      case 'right': {
+      case 'player': {
         if (this.state=='stopped') {
-          (this.currentSprite<4) ? this.currentSprite+=1 : this.currentSprite=0;
+          (this.currentSprite<4) ? this.currentSprite++ : this.currentSprite=0;
           player.sprite = this.players[this.currentSprite];
         };
-      break;
+        break;
       }
-      case 'left': {
+      case 'level': {
         if (this.state=='stopped') {
-          (this.currentSprite>0) ? this.currentSprite-=1 : this.currentSprite=4;
-          player.sprite = this.players[this.currentSprite];
+          (this.level<2) ? this.level++ : this.level=0;
         };
-      break;
+        break;
       }
+      // Not a game menu call the Player's method
       default: {
         if (this.state=="running") {player.move(key)};
       }
@@ -254,7 +257,7 @@ const yEnemiesPositions = [63,146,229];
 let game = new Game;
 let timer = 0;
 
-// Instance of player at a fix position.
+// Instance of player at a fixed position.
 let player = new Player(205,395,0);
 
 /* Instances of enemies
@@ -268,16 +271,20 @@ for (let i=0; i<random(3,5); i++) {
 }
 window.setInterval(changeTimer, 1000);
 
-// This listens for key presses and sends the keys to your
-// Player.handleInput() method. You don't need to modify this.
+/* This listens for key presses and sends the keys to your
+   Game.handleInput() method. The method will call Player.move(method) if the
+   game is running to allow players move. Modified to allow start menu and pause.
+*/
 document.addEventListener('keyup', function(e) {
     var allowedKeys = {
-        27: 'pause',
-        32: 'start',
-        37: 'left',
-        38: 'up',
-        39: 'right',
-        40: 'down'
+         13: 'player',
+         27: 'pause',
+         32: 'start',
+         37: 'left',
+         38: 'up',
+         39: 'right',
+         40: 'down',
+        107: 'level'
     };
 
     game.handleInput(allowedKeys[e.keyCode]);
