@@ -3,6 +3,18 @@ class Game {
     this.level = 0;
     this.levels = ['lightgreen','orange','red'];
     this.state = 'stopped';
+    this.allStates= [{state:'paused',
+                      title:'GAME PAUSED',
+                      text:'Hit the escape key again to resume'},
+                     {state: 'won',
+                      title: 'YES! YOU WIN',
+                      text: 'Hit space key to play again'},
+                     {state: 'lost',
+                      title: 'GAME OVER !',
+                      text: 'Hit space to start a new game'},
+                     {state: 'stopped',
+                      title: 'CROSS THE ROAD!',
+                      text: 'Hit space to start a new game'}];
     this.win = false;
     this.players = ['images/char-boy.png',
                     'images/char-cat-girl.png',
@@ -33,55 +45,52 @@ class Game {
     }
   };
 
+/* Methods to render the Game object according to its state. An empty popup is
+   prepared and then the different contents of the popup are set according to
+   each case:
+      - Pause
+      - Game won
+      - Game lost
+      - Game waiting to start with the oportunity to choose player character and
+        difficulty.
+    Do nothing if game is just running
+*/
   render() {
     if (this.state!='running') {
-      ctx.fillStyle = 'rgba(0,0,0,0.7';
-      ctx.fillRect(20,80,465,475);
-      ctx.fillStyle = 'white';
-      ctx.font = '35px arial'
-      if (this.state=='paused') {
-        ctx.fillText('GAME PAUSED',130,280);
-        ctx.font = '25px arial';
-        ctx.fillText('Hit the escape key again to resume',60,320);
-      };
-      if (this.state=='won') {
-        ctx.fillText('YES! YOU WIN',130,280);
-        ctx.font = '25px arial';
-        ctx.fillText('Hit space key to play again',100,320);
-      };
-      if (this.state=='lost') {
-        ctx.fillText('GAME OVER !',130,280);
-        ctx.font = '25px arial';
-        ctx.fillText('Hit space to start a new game',80,320);
-      };
-      /* Set the starting popup with the possible choices for
-            - Game difficulty
-            - Character choices
-      */
-      if (this.state=='stopped') {
-        ctx.fillText('CROSS THE ROAD!',95,180);
-        ctx.font = '25px arial';
-        ctx.fillText('Hit space to start a new game',90,230);
-        ctx.fillText('Use + key to set game difficulty',80,300);
-        ctx.fillStyle = this.levels[this.level];
-        ctx.arc(250,350,20,0,2*Math.PI);
-        ctx.fill();
-        ctx.lineWidth = 5;
-        ctx.strokeStyle='black';
-        ctx.fillStyle = 'white';
-        ctx.stroke();
-        ctx.fillText('Choose player with Enter key',90,430);
-        ctx.strokeStyle = 'red';
-        ctx.lineJoin = 'round'
-        ctx.strokeRect(205,448,96,100);
-        ctx.drawImage(Resources.get(player.sprite), 205, 395);
-      };
+      this.displayPopUp();
+      if (this.state=='stopped') {this.startMenu();};
     };
   }
 
-//  endGame(win) {
-//    (win) ? console.log('you win') : console.log('You lost');
-//  };
+  displayPopUp() {
+    ctx.fillStyle = 'rgba(0,0,0,0.7';
+    ctx.fillRect(20,80,465,475);
+    ctx.fillStyle = 'white';
+    ctx.font = '35px arial'
+    ctx.textAlign ='center';
+    let index = 0;
+    while (this.state!=this.allStates[index].state) {index++};
+    ctx.fillText(this.allStates[index].title,252,180);
+    ctx.font = '25px arial';
+    ctx.fillText(this.allStates[index].text,252,230);
+  }
+
+  startMenu() {
+    ctx.fillText('Hit space to start a new game',252,230);
+    ctx.fillText('Use + key to set game difficulty',252,300);
+    ctx.fillStyle = this.levels[this.level];
+    ctx.arc(250,350,20,0,2*Math.PI);
+    ctx.fill();
+    ctx.lineWidth = 5;
+    ctx.strokeStyle='black';
+    ctx.fillStyle = 'white';
+    ctx.stroke();
+    ctx.fillText('Choose player with Enter key',252,430);
+    ctx.strokeStyle = 'red';
+    ctx.lineJoin = 'round'
+    ctx.strokeRect(205,448,96,100);
+    ctx.drawImage(Resources.get(player.sprite), 205, 395);
+  }
 
   handleInput(key) {
     switch (key) {
