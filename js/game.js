@@ -1,13 +1,21 @@
 class Game {
   constructor() {
     this.level = 1;
-    this.state = 'running';
-    this.popUp = false;
+    this.state = 'stopped';
+    this.win = false;
+    this.players = ['images/char-boy.png',
+                    'images/char-cat-girl.png',
+                    'images/char-pink-girl.png',
+                    'images/char-horn-girl.png',
+                    'images/char-princess-girl.png'];
+    this.currentSprite = 0 ;
   }
 
   changeState(state) {
     this.state=state
     switch (this.state) {
+      case 'lost':
+      case 'won':
       case 'paused':
       case 'stopped': {
         for (let enemy of allEnemies) {
@@ -25,15 +33,34 @@ class Game {
   };
 
   render() {
-    if(this.state=='paused') {
+    if (this.state!='running') {
       ctx.fillStyle = 'rgba(0,0,0,0.7';
       ctx.fillRect(20,80,465,475);
       ctx.fillStyle = 'white';
       ctx.font = '35px arial'
-      ctx.fillText('GAME PAUSED',130,280);
-      ctx.font = '25px arial';
-      ctx.fillText('Hit the p key again to resume',100,320);
-    }
+      if (this.state=='paused') {
+        ctx.fillText('GAME PAUSED',130,280);
+        ctx.font = '25px arial';
+        ctx.fillText('Hit the escape key again to resume',60,320);
+      };
+      if (this.state=='won') {
+        ctx.fillText('YES! YOU WIN',130,280);
+        ctx.font = '25px arial';
+        ctx.fillText('Hit space key to play again',100,320);
+      };
+      if (this.state=='lost') {
+        ctx.fillText('GAME OVER !',130,280);
+        ctx.font = '25px arial';
+        ctx.fillText('Hit space to start a new game',100,320);
+      };
+      if (this.state=='stopped') {
+        ctx.fillText('CROSS THE ROAD!',100,280);
+        ctx.font = '25px arial';
+        ctx.fillText('Hit space to start a new game',100,320);
+        ctx.fillText('Choose player with left and right arrows',30,440)
+        ctx.drawImage(Resources.get(player.sprite), 205, 395);
+      };
+    };
   }
 
   endGame(win) {
@@ -45,16 +72,30 @@ class Game {
       case "pause": {
         if (this.state=="running") {
           this.changeState("paused");
-          break
+          break;
         };
         if (this.state=="paused") {
           this.changeState("running")
         };
-  //      break;
+      break;
       }
-      case "run": {
+      case "start": {
         if (this.state=="stopped") {this.changeState("running")};
-        break;
+      break;
+      }
+      case 'right': {
+        if (this.state=='stopped') {
+          (this.currentSprite<4) ? this.currentSprite+=1 : this.currentSprite=0;
+          player.sprite = this.players[this.currentSprite];
+        };
+      break;
+      }
+      case 'left': {
+        if (this.state=='stopped') {
+          (this.currentSprite>0) ? this.currentSprite-=1 : this.currentSprite=4;
+          player.sprite = this.players[this.currentSprite];
+        };
+      break;
       }
       default: {
         if (this.state=="running") {player.move(key)};
@@ -111,7 +152,7 @@ class Player extends Character {
     this.y = y;
     this.width = 40;
     this.life = 3;
-    this.sprite = 'images/char-boy.png'
+    this.sprite = 'images/char-boy.png';
   }
 
 // The player doesn't move by itself so its update method do nothing.
@@ -121,7 +162,7 @@ class Player extends Character {
   move(key) {
     switch (key) {
       case 'up': {
-        (this.y-83>-15) ? this.y -= 83 : endGame(true);
+        (this.y-83>-15) ? this.y -= 83 : game.state ='won';
         break;
       }
       case  'down': {
@@ -153,7 +194,7 @@ function checkCollisions() {
       player.y = 373;
       player.life -= 1;
       updateScore();
-      (player.life==0) ? endGame(false) : false;
+      (player.life==0) ? game.state='lost': false;
     };
   };
 }
@@ -218,12 +259,12 @@ window.setInterval(changeTimer, 1000);
 // Player.handleInput() method. You don't need to modify this.
 document.addEventListener('keyup', function(e) {
     var allowedKeys = {
-        13: 'start',
+        27: 'pause',
+        32: 'start',
         37: 'left',
         38: 'up',
         39: 'right',
-        40: 'down',
-        80: 'pause'
+        40: 'down'
     };
 
     game.handleInput(allowedKeys[e.keyCode]);
