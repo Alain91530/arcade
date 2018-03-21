@@ -1,4 +1,7 @@
 body {
+  background-color: lightgrey;
+  font-size: 2em;
+  line-height: 0.5em;
   text-align: center;
 }
 
@@ -8,8 +11,6 @@ body {
 }
 
 #time {
-  font-size: 2em;
-  line-height: 0.5em;
   width: 33.33%;
 }
 
@@ -19,4 +20,9 @@ body {
 
 #gems {
   width: 33.33%;
+}
+
+#rules {
+  font-size: 0.8em;
+  width: 100%
 }

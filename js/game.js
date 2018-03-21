@@ -148,7 +148,7 @@ class Game {
 // will be used to create enemies and player classes
 
 class Character {
-  constructor(x = 0, y = 0, speed, sprite = 'images/enemy-bug.png') {
+  constructor(x = 0, y = 0, speed = 0, sprite = 'images/enemy-bug.png') {
 
       // Position x,y on the screen
       this.x = x;
@@ -170,7 +170,7 @@ class Character {
 
 // Enemy sub-class
 class Enemy extends Character {
-  constructor(x, y,speed, sprite) {
+  constructor(x,y,speed,sprite) {
     super(x, y, speed, sprite);
     this.xStart = x;
     this.speedStart = speed;
@@ -180,7 +180,17 @@ class Enemy extends Character {
   // Move the enemy and then check for collision.
   update(dt) {
     (this.x>505) ? this.x = this.xStart : this.x=this.x+(this.speed*dt);
-    checkCollisions ();
+  }
+}
+
+// Gem sub-class
+class Gem extends Character {
+  constructor(x,y,sprite,color) {
+    super(x,y,sprite);
+    this.x = x;
+    this.y = y;
+    this.sprite = 'images/Gem Green.png';
+    this.color = color;
   }
 }
 
@@ -194,9 +204,11 @@ class Player extends Character {
     this.life = 3;
     this.sprite = 'images/char-boy.png';
   }
-
-// The player doesn't move by itself so its update method do nothing.
-  update(dt) {};
+/*
+  The player doesn't move by itself so its update method do nothing.
+  Only collisions has to be checked.
+*/
+  update(dt) {this.checkCollisions ()};
 
 // Method to handle the moves of player
   move(key) {
@@ -219,25 +231,26 @@ class Player extends Character {
       }
     }
   }
+  // Method to detect collisions
+  checkCollisions() {
+    for(let i=0; i<allEnemies.length; i++) {
+      let  enemyChecked =allEnemies[i];
+      if (this.x<enemyChecked.x+enemyChecked.width
+        && this.x+player.width>enemyChecked.x
+        && this.y<enemyChecked.y+enemyChecked.height
+        && this.y+player.height>enemyChecked.y)
+      {
+        this.x = 205;
+        this.y = 373;
+        this.life -= 1;
+        updateScore();
+        (this.life==0) ? game.state='lost': false;
+      };
+    };
+  }
 }
 
-// Detections of collision
-function checkCollisions() {
-  for(let i=0; i<allEnemies.length; i++) {
-    let  enemyChecked =allEnemies[i];
-    if (player.x<enemyChecked.x+enemyChecked.width
-      && player.x+player.width>enemyChecked.x
-      && player.y<enemyChecked.y+enemyChecked.height
-      && player.y+player.height>enemyChecked.y)
-    {
-      player.x = 205;
-      player.y = 373;
-      player.life -= 1;
-      updateScore();
-      (player.life==0) ? game.state='lost': false;
-    };
-  };
-}
+
 /*
   Function to handle the timer
 */
@@ -299,7 +312,13 @@ let allEnemies = [];
 for (let i=0; i<random(3,5); i++) {
   allEnemies.push(new Enemy(-(random(0,150)),yEnemiesPositions[random(0,2)],random(20,100)));
 }
+/*
+ Instances of gems:
+  - One orange
+  - random number of green
 window.setInterval(changeTimer, 1000);
+*/
+let allGems = [new Gem(101*random(0,4),146,0,'orange','images/Gem Orange.png')]
 /*
   This listens for key presses and sends the keys to your
   Game.handleInput() method. The method will call Player.move(method) if the

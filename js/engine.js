@@ -149,10 +149,14 @@ var Engine = (function(global) {
         /* Loop through all of the objects within the allEnemies array and call
          * the render function you have defined.
          */
-        allEnemies.forEach(function(enemy) {
-            enemy.render();
+         // Added rendering of Gems
+        allGems.forEach(function(gem) {
+          gem.render();
         });
-
+        allEnemies.forEach(function(enemy) {
+          enemy.render();
+        });
+        // Adder for player rendering
         player.render();
         // Added to show a popup when needed
         game.render();
@@ -180,7 +184,10 @@ var Engine = (function(global) {
         'images/char-cat-girl.png',
         'images/char-pink-girl.png',
         'images/char-horn-girl.png',
-        'images/char-princess-girl.png'
+        'images/char-princess-girl.png',
+      // Gems Added
+        'images/Gem Green.png',
+        'images/Gem Orange.png'
     ]);
     Resources.onReady(init);
 
