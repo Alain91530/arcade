@@ -1,8 +1,16 @@
+/* Game class: the class wich will hold the game object and handle all
+   modification on this one
+*/
 class Game {
   constructor() {
+    // Difficulty levels (0: easy to 3: difficult)
     this.level = 0;
+    // Colors for level display in star menu
     this.levels = ['lightgreen','orange','red'];
+    // Current sate of the game
     this.state = 'stopped';
+    // Object holding information to be displayed on the popup of the according
+    // state
     this.allStates= [{state:'paused',
                       title:'GAME PAUSED',
                       text:'Hit the escape key again to resume'},
@@ -16,6 +24,7 @@ class Game {
                       title: 'CROSS THE ROAD!',
                       text: 'Hit space to start a new game'}];
     this.win = false;
+    // Images of all possible players character
     this.players = ['images/char-boy.png',
                     'images/char-cat-girl.png',
                     'images/char-pink-girl.png',
@@ -24,6 +33,7 @@ class Game {
     this.currentSprite = 0 ;
   }
 
+  // Method to change the state of the game according player's action
   changeState(state) {
     this.state=state
     switch (this.state) {
@@ -62,6 +72,7 @@ class Game {
     };
   }
 
+// Method to actualy set the popup displayed by the render() method
   displayPopUp() {
     ctx.fillStyle = 'rgba(0,0,0,0.7';
     ctx.fillRect(20,80,465,475);
@@ -75,6 +86,7 @@ class Game {
     ctx.fillText(this.allStates[index].text,252,230);
   }
 
+// Method to add the sarting menu in the popup when game is stopped
   startMenu() {
     ctx.fillText('Hit space to start a new game',252,230);
     ctx.fillText('Use + key to set game difficulty',252,300);
@@ -92,6 +104,9 @@ class Game {
     ctx.drawImage(Resources.get(player.sprite), 205, 395);
   }
 
+/* Method to handle the allowed keys and change the game or pass the stroked key
+   to the Player's move(key) method to have it move
+*/
   handleInput(key) {
     switch (key) {
       case "pause": {
@@ -223,20 +238,21 @@ function checkCollisions() {
     };
   };
 }
-
-function endGame(win) {
-  (win) ? console.log('you win') : console.log('You lost')
-}
-// Function to handle the timer
+/*
+  Function to handle the timer
+*/
 function changeTimer() {
   (game.state=='running') ? timer+=1 : false;
   updateScore();
 };
-
-// Function updating the score (time, lives and diamond)
+/*
+  Function updating the score (time, lives and diamond)
+*/
 function updateScore() {
   let lives = document.getElementById('lives');
-//  Update timer
+/*
+  Update timer
+*/
   const hrs = Math.trunc(timer/3600);
   const mins = (Math.trunc(timer/60)-(hrs*60));
   const secs = (timer-((hrs*3600)+(mins*60)));
@@ -244,7 +260,9 @@ function updateScore() {
   (mins<10) ? stringTime = stringTime+'0'+mins+':' : stringTime = stringTime+mins+':';
   (secs<10) ? stringTime = stringTime+'0'+secs : stringTime = stringTime+secs;
   document.getElementById('time').textContent = stringTime;
-// Update lives
+/*
+  Update lives
+*/
   while (lives.firstChild) {
     lives.removeChild(lives.firstChild);
   }
@@ -252,25 +270,28 @@ function updateScore() {
     lives.innerHTML = lives.innerHTML+'<img src="images/Heart.png" height="70" alt="">';
   }
 }
-
-
-// Function generating an positive integer n with 0 <= min <= n <= max
+/*
+  Function generating an positive integer n with 0 <= min <= n <= max
+*/
 function random(min,max){
   return min+Math.floor(Math.random()*(max+2-(min+1)));
 }
-
-// Array used to pick random lanes for enemies at beginning of game.
+/*
+  Array used to pick random lanes for enemies at beginning of game.
+*/
 const yEnemiesPositions = [63,146,229];
-
-// Instance of the game
+/*
+  Instance of the game
+*/
 let game = new Game;
 let timer = 0;
-
-// Instance of player at a fixed position.
+/*
+  Instance of player at a fixed position.
+*/
 let player = new Player(205,395,0);
-
-/* Instances of enemies
-   - Random number and for each:
+/*
+ Instances of enemies:
+   - Random number accordind to level and for each one:
       - Random speed
       - Random lane
 */
@@ -279,10 +300,10 @@ for (let i=0; i<random(3,5); i++) {
   allEnemies.push(new Enemy(-(random(0,150)),yEnemiesPositions[random(0,2)],random(20,100)));
 }
 window.setInterval(changeTimer, 1000);
-
-/* This listens for key presses and sends the keys to your
-   Game.handleInput() method. The method will call Player.move(method) if the
-   game is running to allow players move. Modified to allow start menu and pause.
+/*
+  This listens for key presses and sends the keys to your
+  Game.handleInput() method. The method will call Player.move(method) if the
+  game is running to allow players move. Modified to allow start menu and pause.
 */
 document.addEventListener('keyup', function(e) {
     var allowedKeys = {

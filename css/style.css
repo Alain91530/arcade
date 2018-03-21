@@ -1,6 +1,7 @@
 body {
-    text-align: center;
+  text-align: center;
 }
+
 #score {
   display: flex;
   flex-flow: wrap;
@@ -8,16 +9,14 @@ body {
 
 #time {
   font-size: 2em;
+  line-height: 0.5em;
   width: 33.33%;
 }
 
 #lives {
-  width: 33.33%
+  width: 33.33%;
 }
 
 #gems {
-  width: 33.33%
+  width: 33.33%;
 }
- #score {
-   text-align: center;
- }
