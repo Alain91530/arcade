@@ -1,6 +1,11 @@
-/* Game class: the class wich will hold the game object and handle all
+/*******************************************************************************
+
+              Classes used for the game
+
+********************************************************************************
+   Game class: the class wich will hold the game object and handle all
    modification on this one
-*/
+*******************************************************************************/
 class Game {
   constructor() {
     // Difficulty levels (0: easy to 3: difficult)
@@ -23,17 +28,47 @@ class Game {
                      {state: 'stopped',
                       title: 'CROSS THE ROAD!',
                       text: 'Hit space to start a new game'}];
-    this.win = false;
+//    this.win = false;
     // Images of all possible players character
     this.players = ['images/char-boy.png',
                     'images/char-cat-girl.png',
                     'images/char-pink-girl.png',
                     'images/char-horn-girl.png',
                     'images/char-princess-girl.png'];
+    // Current player sprite used to let him change it
     this.currentSprite = 0 ;
   }
-
-  // Method to change the state of the game according player's action
+/*******************************************************************************
+      Methods of Game class
+*******************************************************************************/
+initGame() {
+  timer = 0;
+  this.level = 0;
+  this.state = 'stopped';
+//  this.win = false;
+  this.currentSprite = 0;
+  // Create an instance of the player with default parameters
+  player = new Player(205,395,0);
+  /*
+   creates initializes the instances of enemies:
+     - Random number accordind to level and for each one:
+        - Random speed
+        - Random lane
+  */
+  for (let i=0; i<random(3,5); i++) {
+    allEnemies.push(new Enemy(-(random(0,150)),yEnemiesPositions[random(0,2)],random(20,100)));
+  }
+  /*
+   Instances of gems:
+    - One orange
+    - random number of green
+  window.setInterval(changeTimer, 1000);
+  */
+  allGems = [new Gem(111*random(0,4),146,0,'orange','images/Gem Orange.png')]
+}
+/*
+  Method to change the state of the game according player's action
+*/
   changeState(state) {
     this.state=state
     switch (this.state) {
@@ -54,8 +89,8 @@ class Game {
       }
     }
   };
-
-/* Methods to render the Game object according to its state. An empty popup is
+/*
+   Methods to render the Game object according to its state. An empty popup is
    prepared and then the different contents of the popup are set according to
    each case:
       - Pause
@@ -71,8 +106,9 @@ class Game {
       if (this.state=='stopped') {this.startMenu();};
     };
   }
-
-// Method to actualy set the popup displayed by the render() method
+/*
+   Method to actualy set the popup displayed by the render() method
+*/
   displayPopUp() {
     ctx.fillStyle = 'rgba(0,0,0,0.7';
     ctx.fillRect(20,80,465,475);
@@ -85,8 +121,9 @@ class Game {
     ctx.font = '25px arial';
     ctx.fillText(this.allStates[index].text,252,230);
   }
-
-// Method to add the sarting menu in the popup when game is stopped
+/*
+   Method to add the sarting menu in the popup when game is stopped
+*/
   startMenu() {
     ctx.fillText('Hit space to start a new game',252,230);
     ctx.fillText('Use + key to set game difficulty',252,300);
@@ -103,9 +140,10 @@ class Game {
     ctx.strokeRect(205,448,96,100);
     ctx.drawImage(Resources.get(player.sprite), 205, 395);
   }
-
-/* Method to handle the allowed keys and change the game or pass the stroked key
-   to the Player's move(key) method to have it move
+/*
+   Method to handle the allowed keys and change the game or pass the stroked key
+   to the Player's move(key) method to have it move. Called by the keystroke
+   event listener.
 */
   handleInput(key) {
     switch (key) {
@@ -143,10 +181,10 @@ class Game {
     }
   };
 }
-
-// Super class of charaters of the game
-// will be used to create enemies and player classes
-
+/*******************************************************************************
+    Character: super class of items of the game
+    will be used to create enemies, gems and player classes
+*******************************************************************************/
 class Character {
   constructor(x = 0, y = 0, speed = 0, sprite = 'images/enemy-bug.png') {
 
@@ -161,40 +199,62 @@ class Character {
       // Moving speed of the character
       this.speed = speed;
   }
-  // Draw character on screen
+/*******************************************************************************
+    Methods of Character class
+*******************************************************************************/
+/*
+    Draw character on screen
+*/
   render() {
       ctx.globalAlpha = 1;
       ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
   };
 }
-
-// Enemy sub-class
+/*******************************************************************************
+  Enemy sub-class of Character
+*******************************************************************************/
 class Enemy extends Character {
   constructor(x,y,speed,sprite) {
     super(x, y, speed, sprite);
     this.xStart = x;
     this.speedStart = speed;
   };
-
-  // Update position of the enemies
-  // Move the enemy and then check for collision.
+/*******************************************************************************
+    Method added to enemy
+*******************************************************************************/
+/*
+   Update position of the enemies
+   Move the enemy and then check for collision.
+*/
   update(dt) {
     (this.x>505) ? this.x = this.xStart : this.x=this.x+(this.speed*dt);
   }
 }
-
-// Gem sub-class
+/*******************************************************************************
+  Gem sub-class of Character
+*******************************************************************************/
 class Gem extends Character {
-  constructor(x,y,sprite,color) {
+  constructor(x,y,speed,color,sprite) {
     super(x,y,sprite);
     this.x = x;
     this.y = y;
-    this.sprite = 'images/Gem Green.png';
+    this.sprite = sprite;
     this.color = color;
   }
+/*******************************************************************************
+    Method modified of Character to adust the size of the sprite
+*******************************************************************************/
+/*
+  Draw gems on screen with the proper size
+*/
+  render() {
+      ctx.globalAlpha = 1;
+      ctx.drawImage(Resources.get(this.sprite), this.x, this.y,60,60);
+  };
 }
-
-// Player sub-class
+/*******************************************************************************
+    Player sub-class of Character
+*******************************************************************************/
 class Player extends Character {
   constructor(x, y, sprite) {
     super(x, y, sprite);
@@ -204,13 +264,19 @@ class Player extends Character {
     this.life = 3;
     this.sprite = 'images/char-boy.png';
   }
+/*******************************************************************************
+    Methods added to Player or modified from Character
+*******************************************************************************/
 /*
-  The player doesn't move by itself so its update method do nothing.
-  Only collisions has to be checked.
+  Modified method to update position of player:
+  The player doesn't move by itself so its update method do nothing.Only
+  collisions has to be checked. Position will be update by the event handler
 */
   update(dt) {this.checkCollisions ()};
-
-// Method to handle the moves of player
+/*
+  Method to handle the moves of player.
+  Called by the Game.handleInput() method on keystroke event
+*/
   move(key) {
     switch (key) {
       case 'up': {
@@ -231,7 +297,9 @@ class Player extends Character {
       }
     }
   }
-  // Method to detect collisions
+/*
+  Method to detect collisions
+*/
   checkCollisions() {
     for(let i=0; i<allEnemies.length; i++) {
       let  enemyChecked =allEnemies[i];
@@ -249,17 +317,21 @@ class Player extends Character {
     };
   }
 }
+/*******************************************************************************
 
+          Generic utility functions for the game
 
+*******************************************************************************/
 /*
-  Function to handle the timer
+  Function generating a positive integer n with 0 <= min <= n <= max
 */
-function changeTimer() {
-  (game.state=='running') ? timer+=1 : false;
-  updateScore();
-};
+function random(min,max){
+  return min+Math.floor(Math.random()*(max+2-(min+1)));
+}
 /*
-  Function updating the score (time, lives and diamond)
+  Function updating the score (time, lives and diamond) called by the timer and
+  methods changing score like checkCollisions(). It changes the DOM not managed
+  by engine.js
 */
 function updateScore() {
   let lives = document.getElementById('lives');
@@ -284,45 +356,54 @@ function updateScore() {
   }
 }
 /*
-  Function generating an positive integer n with 0 <= min <= n <= max
+  Function to handle the timer interval
 */
-function random(min,max){
-  return min+Math.floor(Math.random()*(max+2-(min+1)));
-}
+function changeTimer() {
+  (game.state=='running') ? timer+=1 : false;
+  updateScore();
+};
+/*******************************************************************************
+
+          Global variables of the Game
+
+*******************************************************************************/
+const yEnemiesPositions = [63,146,229]; // Used to ease the calculation
+const yGemsPositions = [63,146,229];    // different cause of gem's size
 /*
-  Array used to pick random lanes for enemies at beginning of game.
+  Timer to be displayed in the score pannel;
 */
-const yEnemiesPositions = [63,146,229];
-/*
-  Instance of the game
-*/
-let game = new Game;
 let timer = 0;
 /*
-  Instance of player at a fixed position.
+  Hold and create the instance of the game
 */
-let player = new Player(205,395,0);
+let game = new Game;
 /*
- Instances of enemies:
-   - Random number accordind to level and for each one:
-      - Random speed
-      - Random lane
+  Hold the instance of player, will be initialized by Game.initGame() method.
 */
-let allEnemies = [];
-for (let i=0; i<random(3,5); i++) {
-  allEnemies.push(new Enemy(-(random(0,150)),yEnemiesPositions[random(0,2)],random(20,100)));
-}
+let player;      // Default start position and null speed
 /*
- Instances of gems:
-  - One orange
-  - random number of green
-window.setInterval(changeTimer, 1000);
+  Array which will hold the instances of enemies, will be initialized by
+  Game.initGame() method.
 */
-let allGems = [new Gem(101*random(0,4),146,0,'orange','images/Gem Orange.png')]
+let allEnemies =[];
 /*
-  This listens for key presses and sends the keys to your
-  Game.handleInput() method. The method will call Player.move(method) if the
-  game is running to allow players move. Modified to allow start menu and pause.
+  Array which will hold the instances of gems, will be initialized by
+  Game.initGame() method
+*/
+let allGems = [];
+/*******************************************************************************
+
+    Main program:
+      - create objects
+      - initialize them
+      - create interval and event
+
+*******************************************************************************/
+game.initGame();
+/*
+  This listens for key presses and sends the keys to Game.handleInput() method.
+  The method will call Player.move(method) if the game is running to allow
+  players move. Modified to allow start menu and pause.
 */
 document.addEventListener('keyup', function(e) {
     var allowedKeys = {
