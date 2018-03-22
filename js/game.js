@@ -28,7 +28,6 @@ class Game {
                      {state: 'stopped',
                       title: 'CROSS THE ROAD!',
                       text: 'Hit space to start a new game'}];
-//    this.win = false;
     // Images of all possible players character
     this.players = ['images/char-boy.png',
                     'images/char-cat-girl.png',
@@ -45,8 +44,9 @@ initGame() {
   timer = 0;
   this.level = 0;
   this.state = 'stopped';
-//  this.win = false;
   this.currentSprite = 0;
+  allEnemies=[];
+  allGems=[];
   // Create an instance of the player with default parameters
   player = new Player(205,395,0);
   /*
@@ -62,9 +62,9 @@ initGame() {
    Instances of gems:
     - One orange
     - random number of green
-  window.setInterval(changeTimer, 1000);
   */
   allGems = [new Gem(111*random(0,4),146,0,'orange','images/Gem Orange.png')]
+  updateScore();
 }
 /*
   Method to change the state of the game according player's action
@@ -158,7 +158,14 @@ initGame() {
       break;
       }
       case "start": {
-        if (this.state=="stopped") {this.changeState("running")};
+        if (this.state=="stopped") {
+          this.changeState("running")
+        }
+        else {
+          if ((this.state=='lost')||(this.state=='won')) {
+            this.initGame();
+          }
+        }
       break;
       }
       case 'player': {
@@ -399,7 +406,10 @@ let allGems = [];
       - create interval and event
 
 *******************************************************************************/
+// initialize the game object to start a new game
 game.initGame();
+// Set an interval and it's hander for the game's timer.
+window.setInterval(changeTimer, 1000);
 /*
   This listens for key presses and sends the keys to Game.handleInput() method.
   The method will call Player.move(method) if the game is running to allow
