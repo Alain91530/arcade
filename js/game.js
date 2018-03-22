@@ -40,24 +40,43 @@ class Game {
 /*******************************************************************************
       Methods of Game class
 *******************************************************************************/
+/*
+  Method to start a new game, initialization of everything in the game
+*/
 initGame() {
   timer = 0;
-  this.level = 0;
   this.state = 'stopped';
-  this.currentSprite = 0;
+//  this.currentSprite = 0;
   allEnemies=[];
   allGems=[];
   // Create an instance of the player with default parameters
-  player = new Player(205,395,0);
+  player = new Player(205,395,0, this.players[this.currentSprite]);
   /*
-   creates initializes the instances of enemies:
+   creates initializes the instances of enemies according to levels:
      - Random number accordind to level and for each one:
         - Random speed
         - Random lane
   */
-  for (let i=0; i<random(3,5); i++) {
-    allEnemies.push(new Enemy(-(random(0,150)),yEnemiesPositions[random(0,2)],random(20,100)));
-  }
+  switch(this.level) {
+    case 2: {
+
+    };
+    case 1: {
+      for (let i=0; i<random(3,5); i++) {
+        allEnemies.push(new Enemy(-(random(0,150)),
+        yEnemiesPositions[random(0,2)],
+        random(80,150)));
+      };
+    };
+    case 0: {
+      for (let i=0; i<random(3,5); i++) {
+        allEnemies.push(new Enemy(-(random(0,150)),
+        yEnemiesPositions[random(0,2)],
+        random(20,100)));
+      };
+    };
+  };
+
   /*
    Instances of gems:
     - One orange
@@ -159,14 +178,15 @@ initGame() {
       }
       case "start": {
         if (this.state=="stopped") {
-          this.changeState("running")
+          this.changeState('running');
         }
         else {
           if ((this.state=='lost')||(this.state=='won')) {
-            this.initGame();
-          }
-        }
-      break;
+          this.changeState('stopped');
+          this.initGame();
+        };
+        break;
+      };
       }
       case 'player': {
         if (this.state=='stopped') {
@@ -179,6 +199,7 @@ initGame() {
         if (this.state=='stopped') {
           (this.level<2) ? this.level++ : this.level=0;
         };
+        this.initGame();
         break;
       }
       // Not a game menu call the Player's method
@@ -263,13 +284,13 @@ class Gem extends Character {
     Player sub-class of Character
 *******************************************************************************/
 class Player extends Character {
-  constructor(x, y, sprite) {
+  constructor(x, y,speed,sprite) {
     super(x, y, sprite);
     this.x = x;
     this.y = y;
     this.width = 40;
     this.life = 3;
-    this.sprite = 'images/char-boy.png';
+    this.sprite = sprite;//'images/char-boy.png';
   }
 /*******************************************************************************
     Methods added to Player or modified from Character
@@ -316,7 +337,7 @@ class Player extends Character {
         && this.y+player.height>enemyChecked.y)
       {
         this.x = 205;
-        this.y = 373;
+        this.y = 395;
         this.life -= 1;
         updateScore();
         (this.life==0) ? game.state='lost': false;
