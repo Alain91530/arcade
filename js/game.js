@@ -44,17 +44,43 @@ class Game {
   Method to start a new game, initialization of everything in the game
 */
 initGame() {
+  /*
+    Local variables of the method
+  */
+  const yEnemiesPositions = [63,146,229];  // Used to ease the calculation
+  const yGemsPositions = [130,213,292];    // different cause of gem's size
+  /*
+  Array [0-14] containing gems at their positions on the grid game
+    - 0 no gem
+    - 1 green gem
+    - 2 yellow gem, alwaways here
+  The array will be shuffled to obtain random positions for the gems and is
+  initialized with yellow gem at gp[0], random number of green gems will be
+  pushed later in the method.
+  */
+  const gemPositions = [2]
+  // Number of gems for this game.
+  const nbGems = random(4,8);
+  // Usec to store x and y position in the canvas.
+  let xGem;
+  let yGem;
+  /*
+    Init all objects properties
+  */
   timer = 0;
   this.state = 'stopped';
-//  this.currentSprite = 0;
+  /*
+    Release previous instances of enemies and gems to be able to push new
+    instances in the array
+  */
   allEnemies=[];
   allGems=[];
   // Create an instance of the player with default parameters
   player = new Player(205,395,0, this.players[this.currentSprite]);
   /*
    creates initializes the instances of enemies according to levels:
-     - Random number accordind to level and for each one:
-        - Random speed
+     - Random number according to level and for each one:
+        - Random speed (max speed is level dependant)
         - Random lane
   */
   switch(this.level) {
@@ -79,10 +105,44 @@ initGame() {
 
   /*
    Instances of gems:
-    - One orange
-    - random number of green
+    - One yellow already in gemPositions.
+    - random number of green ones to be generated.
   */
-  allGems = [new Gem(111*random(0,4),146,0,'orange','images/Gem Orange.png')]
+
+// Finish to create gemPositions with the green gems.
+  for (let i=1; i<15; i++) {
+    (i<nbGems) ? gemPositions.push(1) : gemPositions.push(0);
+  };
+// Shuffle gemPositions to get random gemPositions
+  for (let pos = gemPositions.length-1; pos > 0; pos--){
+    // pick a random position on the grid
+    let randomPos = Math.floor(Math.random()*(pos+1));
+    // swap grid[pos] and grid[randomPos]
+    let savedPos = gemPositions[pos];
+    gemPositions[pos] = gemPositions[randomPos];
+    gemPositions[randomPos] = savedPos;
+  };
+// Position of gems are created now place them at the right place on grid
+
+  console.log(gemPositions);
+
+  for (let i=1; i<15; i++) {
+    yGem = yGemsPositions[Math.floor(i/5)];
+    xGem = 24+(i%5)*101;
+    switch (gemPositions[i]) {
+      case 2 : {
+        allGems.push(new Gem(xGem,yGem,0,'orange','images/Gem Orange.png'));
+        break;
+      }
+      case 1 : {
+        allGems.push(new Gem(xGem,yGem,0,'green','images/Gem Green.png'));
+        break;
+      }
+    }
+  }
+  /*
+    Reset the score on the screen.
+  */
   updateScore();
 }
 /*
@@ -395,8 +455,6 @@ function changeTimer() {
           Global variables of the Game
 
 *******************************************************************************/
-const yEnemiesPositions = [63,146,229]; // Used to ease the calculation
-const yGemsPositions = [63,146,229];    // different cause of gem's size
 /*
   Timer to be displayed in the score pannel;
 */
