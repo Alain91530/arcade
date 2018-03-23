@@ -1,9 +1,11 @@
 # Fend project #4 Arcade Game #
 ### Description ###
+<center><img src="images/arcade.png">
+
 A classic arcade game following this rules:
 
 The purpose of the game is to have the player cross a road with moving  enemys and reach the river at the top of the game area.  
-If a collision occurs the player go back to its origin place. At each collision the player lose one life and after 3 lives the game is over and the player lose.  
+If a collision occurs the player go back to its origin place. At each collision the player lose one life and after 3 lives the game is over and the player lose. The player must do a final move jumping in the river to win.  
 The player can gain lives by collecting gems on its way to the river. Collecting the yelow gem instantly gives him 1 live and he must collect 3 green gems to get one live.
 The gems collected, number of lives left and time ellapsed are shown on top of the screen.  
 
@@ -24,11 +26,10 @@ Game commands are entered with the keyboard:
     - `left arrow` moves player one square left
     - `right arrow` moves player one square right
 
-<center><img src="docs/img/landscape.jpg">
 ### Version
-__V1.00__ 03/13/2018
+__V1.00__ 03/24/2018
 ### Installation ###
-Clone repository or compressed files. Then open index.html in your browser. or just <a href="https://alain91530.github.io/projects/memory/index.html">play here</a>
+Clone repository or download compressed files. Then open index.html in your browser. or just <a href="https://alain91530.github.io/projects/arcade/index.html">play here</a>
 
 ### Realisation ###
 
@@ -43,15 +44,16 @@ Purpose of the project was to use object oriented code. This realisation is orga
 Graphic animations are made with with the use of canvas and a game engine provided by Udacity.
 
 ### Documentation ###
-Detailed documentation of the project in <a href="https://github.com/Alain91530/memory/blob/master/docs/DOCUMENTATION.md">DOCUMENTATION.MD</a>
+The following diagrams show the organisation of project. See comments in source files for more detailed information on algorythm used.
+<center><img src="images/directory tree.svg">
+<center><img src="images/class diagram.svg">
 
 ### Author ###
 Alain CADENAT
 
 ### Credits ###
-_Mockup_: https://www.udacity.com
-
-### Limitations ###
+_Mockup and graphic engine_: https://www.udacity.com  
+_Emojis_: https://pixabay.com
 
 ### License
 MIT License
