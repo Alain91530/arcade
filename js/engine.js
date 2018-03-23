@@ -179,6 +179,7 @@ var Engine = (function(global) {
         'images/water-block.png',
         'images/grass-block.png',
         'images/enemy-bug.png',
+        'images/reverse-bug.png',
         'images/char-boy.png',
       // Other characters added
         'images/char-cat-girl.png',

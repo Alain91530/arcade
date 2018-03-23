@@ -83,19 +83,27 @@ initGame() {
         - Random speed (max speed is level dependant)
         - Random lane
   */
+  let maxBug=5;
   switch(this.level) {
     case 2: {
+      maxBug = 3;
+      for (let i=0; i<random(1,maxBug); i++) {
+        allEnemies.push(new Enemy(random(501,650),
+        yEnemiesPositions[random(0,2)],
+        -random(40,120),
+        'images/reverse-bug.png'));
+      }
 
     };
     case 1: {
-      for (let i=0; i<random(3,5); i++) {
+      for (let i=0; i<random(3,maxBug); i++) {
         allEnemies.push(new Enemy(-(random(0,150)),
         yEnemiesPositions[random(0,2)],
         random(80,150)));
       };
     };
     case 0: {
-      for (let i=0; i<random(3,5); i++) {
+      for (let i=0; i<random(3,maxBug); i++) {
         allEnemies.push(new Enemy(-(random(0,150)),
         yEnemiesPositions[random(0,2)],
         random(20,100)));
@@ -123,8 +131,6 @@ initGame() {
     gemPositions[randomPos] = savedPos;
   };
 // Position of gems are created now place them at the right place on grid
-
-  console.log(gemPositions);
 
   for (let i=1; i<15; i++) {
     yGem = yGemsPositions[Math.floor(i/5)];
@@ -315,7 +321,7 @@ class Enemy extends Character {
    Move the enemy and then check for collision.
 */
   update(dt) {
-    (this.x>505) ? this.x = this.xStart : this.x=this.x+(this.speed*dt);
+    (((this.speed>0)&&(this.x>505))||((this.speed<0)&&(this.x<-101))) ? this.x = this.xStart : this.x=this.x+(this.speed*dt);
   }
 }
 /*******************************************************************************
@@ -362,8 +368,9 @@ class Player extends Character {
   collisions has to be checked. Position will be update by the event handler
 */
   update(dt) {
-    this.checkCollisions ()
-    this.grabGems()
+    this.checkCollisions();
+    this.grabGems();
+    updateScore();
   };
 /*
   Method to handle the moves of player.
@@ -372,7 +379,7 @@ class Player extends Character {
   move(key) {
     switch (key) {
       case 'up': {
-        (this.y-83>-15) ? this.y -= 83 : game.state ='won';
+        (this.y-83>-15) ? this.y -= 83 : game.changeState('won');
         break;
       }
       case  'down': {
@@ -389,20 +396,20 @@ class Player extends Character {
       }
     }
   }
+/*
+  Method to grab gems and increase number of players lives
+*/
   grabGems() {
     for (let i=0; i<allGems.length; i++) {
       let gemChecked = allGems [i];
       if (this.x<gemChecked.x+gemChecked.width
-        && this.x+player.width>gemChecked.x
+        && this.x+this.width>gemChecked.x
         && this.y<gemChecked.y+gemChecked.height-67
-        && this.y+player.height>gemChecked.y-67)
+        && this.y+this.height>gemChecked.y-67)
       {
         (allGems[i].color=='green') ? this.gems++ : this.life++;
         allGems.splice(i,1);
         if (this.gems==3) {this.life++;this.gems=0;}
-        updateScore();
-        console.log(this.gems,this.life);
-
       }
     }
   }
@@ -413,15 +420,14 @@ class Player extends Character {
     for (let i=0; i<allEnemies.length; i++) {
       let  enemyChecked = allEnemies[i];
       if (this.x<enemyChecked.x+enemyChecked.width
-        && this.x+player.width>enemyChecked.x
+        && this.x+this.width>enemyChecked.x
         && this.y<enemyChecked.y+enemyChecked.height
-        && this.y+player.height>enemyChecked.y)
+        && this.y+this.height>enemyChecked.y)
       {
         this.x = 205;
         this.y = 395;
         this.life -= 1;
-        updateScore();
-        (this.life==0) ? game.state='lost': false;
+        (this.life==0) ? game.changeState('lost'): false;
       };
     };
   }
@@ -470,7 +476,7 @@ function updateScore() {
     gems.removeChild(gems.firstChild);
   }
   for(let nbGems = 0; nbGems<player.gems; nbGems++ ) {
-    gems.innerHTML = gems.innerHTML+'<img src="images/Gem Green.png" height="70" alt="">';
+    gems.innerHTML = gems.innerHTML+'<img src="images/Gem Green.png" height="50" alt=""><span> </span>';
   }
 }
 /*
