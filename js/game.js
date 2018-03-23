@@ -48,7 +48,7 @@ initGame() {
     Local variables of the method
   */
   const yEnemiesPositions = [63,146,229];  // Used to ease the calculation
-  const yGemsPositions = [130,213,292];    // different cause of gem's size
+  const yGemsPositions = [130,213,299];    // different cause of gem's size
   /*
   Array [0-14] containing gems at their positions on the grid game
     - 0 no gem
@@ -350,6 +350,7 @@ class Player extends Character {
     this.y = y;
     this.width = 40;
     this.life = 3;
+    this.gems = 0;
     this.sprite = sprite;//'images/char-boy.png';
   }
 /*******************************************************************************
@@ -360,7 +361,10 @@ class Player extends Character {
   The player doesn't move by itself so its update method do nothing.Only
   collisions has to be checked. Position will be update by the event handler
 */
-  update(dt) {this.checkCollisions ()};
+  update(dt) {
+    this.checkCollisions ()
+    this.grabGems()
+  };
 /*
   Method to handle the moves of player.
   Called by the Game.handleInput() method on keystroke event
@@ -385,12 +389,29 @@ class Player extends Character {
       }
     }
   }
+  grabGems() {
+    for (let i=0; i<allGems.length; i++) {
+      let gemChecked = allGems [i];
+      if (this.x<gemChecked.x+gemChecked.width
+        && this.x+player.width>gemChecked.x
+        && this.y<gemChecked.y+gemChecked.height-67
+        && this.y+player.height>gemChecked.y-67)
+      {
+        (allGems[i].color=='green') ? this.gems++ : this.life++;
+        allGems.splice(i,1);
+        if (this.gems==3) {this.life++;this.gems=0;}
+        updateScore();
+        console.log(this.gems,this.life);
+
+      }
+    }
+  }
 /*
   Method to detect collisions
 */
   checkCollisions() {
-    for(let i=0; i<allEnemies.length; i++) {
-      let  enemyChecked =allEnemies[i];
+    for (let i=0; i<allEnemies.length; i++) {
+      let  enemyChecked = allEnemies[i];
       if (this.x<enemyChecked.x+enemyChecked.width
         && this.x+player.width>enemyChecked.x
         && this.y<enemyChecked.y+enemyChecked.height
@@ -439,8 +460,17 @@ function updateScore() {
   while (lives.firstChild) {
     lives.removeChild(lives.firstChild);
   }
-  for(let nblives = 0; nblives<player.life; nblives++ ) {
+  for(let nbLives = 0; nbLives<player.life; nbLives++ ) {
     lives.innerHTML = lives.innerHTML+'<img src="images/Heart.png" height="70" alt="">';
+  }
+/*
+  Updates gems
+*/
+  while (gems.firstChild) {
+    gems.removeChild(gems.firstChild);
+  }
+  for(let nbGems = 0; nbGems<player.gems; nbGems++ ) {
+    gems.innerHTML = gems.innerHTML+'<img src="images/Gem Green.png" height="70" alt="">';
   }
 }
 /*
