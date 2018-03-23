@@ -1,3 +1,8 @@
+/*
+Very simple css file as grapics and animation is made by js files
+manipulating either the very simple DOM or the canvas for animation.
+*/
+
 body {
   background-color: lightgrey;
   font-size: 2em;

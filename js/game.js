@@ -60,7 +60,7 @@ initGame() {
   initialized with yellow gem at gp[0], random number of green gems will be
   pushed later in the method.
   */
-  const gemPositions = [2]
+  const gemPositions = [2];
   // Number of gems for this game.
   const nbGems = random(4,8);
   // Usec to store x and y position in the canvas.
@@ -94,8 +94,7 @@ initGame() {
         yEnemiesPositions[random(0,2)],
         -random(40,120),
         'images/reverse-bug.png'));
-      }
-
+      };
     };
     case 1: {
       for (let i=0; i<random(3,maxBug); i++) {
@@ -123,7 +122,7 @@ initGame() {
   for (let i=1; i<15; i++) {
     (i<nbGems) ? gemPositions.push(1) : gemPositions.push(0);
   };
-// Shuffle gemPositions to get random gemPositions
+// Shuffle gemPositions to get random gem's positions
   for (let pos = gemPositions.length-1; pos > 0; pos--){
     // pick a random position on the grid
     let randomPos = Math.floor(Math.random()*(pos+1));
@@ -145,9 +144,9 @@ initGame() {
       case 1 : {
         allGems.push(new Gem(xGem,yGem,0,'green','images/Gem Green.png'));
         break;
-      }
-    }
-  }
+      };
+    };
+  };
   /*
     Reset the score on the screen.
   */
@@ -158,25 +157,17 @@ initGame() {
 */
   changeState(state) {
     this.state=state
-    switch (this.state) {
-      case 'lost':
-      case 'won':
-      case 'paused':
-      case 'stopped': {
-        for (let enemy of allEnemies) {
-         enemy.speed = 0;
-        };
-        break;
-      }
-      case 'running': {
-        for (let enemy of allEnemies) {
-          enemy.speed = enemy.speedStart;
-        };
-        break;
-      }
+    if (state=='running') {
+      for (let enemy of allEnemies) {
+        enemy.speed = enemy.speedStart;
+      };
     }
-  };
-
+    else {
+      for (let enemy of allEnemies) {
+       enemy.speed = 0;
+      };
+    };
+  }
 /*
    Methods to render the Game object according to its state. An empty popup is
    prepared and then the different contents of the popup are set according to
@@ -212,24 +203,24 @@ initGame() {
 /*
 Method to add an emoji to popup.
 */
-displayEmoji(state) {
-  let emoji;
-  switch (state) {
-    case 'paused' : {
-      emoji = 'images/wait.png';
-      break;
+  displayEmoji(state) {
+    let emoji;
+    switch (state) {
+      case 'paused' : {
+        emoji = 'images/wait.png';
+        break;
+      };
+      case 'won' : {
+        emoji = 'images/happy.png';
+        break;
+      }
+      case 'lost' : {
+        emoji = 'images/sad.png';
+        break;
+      }
     };
-    case 'won' : {
-      emoji = 'images/happy.png';
-      break;
-    }
-    case 'lost' : {
-      emoji = 'images/sad.png';
-      break;
-    }
-  };
-  ctx.drawImage(Resources.get(emoji), 205, 300);
-}
+    ctx.drawImage(Resources.get(emoji), 205, 300);
+  }
 /*
    Method to add the sarting menu in the popup when game is stopped
 */
@@ -301,14 +292,14 @@ displayEmoji(state) {
   };
   /*
     Method updating the score (time, lives and diamond) called by the timer and
-    methods changing score like checkCollisions(). It changes the DOM not managed
-    by engine.js
+    methods changing score like checkCollisions(). It changes part of the DOM
+    not managed by engine.js (i.e. the added score id node).
   */
   updateScore() {
     let lives = document.getElementById('lives');
     let stringTime;
   /*
-    Update timer
+    Update timer, display timer in hh:mm:ss format.
   */
     const hrs = Math.trunc(this.timer/3600);
     const mins = (Math.trunc(this.timer/60)-(hrs*60));
@@ -385,7 +376,8 @@ class Enemy extends Character {
    Move the enemy and then check for collision.
 */
   update(dt) {
-    (((this.speed>0)&&(this.x>505))||((this.speed<0)&&(this.x<-101))) ? this.x = this.xStart : this.x=this.x+(this.speed*dt);
+    (((this.speed>0)&&(this.x>505))||((this.speed<0)&&(this.x<-101))) ?
+     this.x = this.xStart : this.x=this.x+(this.speed*dt);
   }
 }
 /*******************************************************************************
@@ -478,7 +470,7 @@ class Player extends Character {
     }
   }
 /*
-  Method to detect collisions
+  Method to detect collisions with enemies
 */
   checkCollisions() {
     for (let i=0; i<allEnemies.length; i++) {
@@ -498,7 +490,7 @@ class Player extends Character {
 }
 /*******************************************************************************
 
-          Generic utility functions for the game
+          Generic utility function for the game
 
 *******************************************************************************/
 /*
