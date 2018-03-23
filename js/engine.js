@@ -188,8 +188,12 @@ var Engine = (function(global) {
         'images/char-princess-girl.png',
       // Gems Added
         'images/Gem Green.png',
-        'images/Gem Orange.png'
-    ]);
+        'images/Gem Orange.png',
+      // Emojis added
+        'images/happy.png',
+        'images/sad.png',
+        'images/wait.png'
+        ]);
     Resources.onReady(init);
 
     /* Assign the canvas' context object to the global variable (the window

@@ -8,6 +8,7 @@
 *******************************************************************************/
 class Game {
   constructor() {
+    // Tmer for the game
     this.timer = 0;
     // Difficulty levels (0: easy to 3: difficult)
     this.level = 0;
@@ -190,7 +191,7 @@ initGame() {
   render() {
     if (this.state!='running') {
       this.displayPopUp();
-      if (this.state=='stopped') {this.startMenu();};
+      (this.state=='stopped') ? this.startMenu() : this.displayEmoji(this.state);
     };
   }
 /*
@@ -209,10 +210,32 @@ initGame() {
     ctx.fillText(this.allStates[index].text,252,230);
   }
 /*
+Method to add an emoji to popup.
+*/
+displayEmoji(state) {
+  let emoji;
+  switch (state) {
+    case 'paused' : {
+      emoji = 'images/wait.png';
+      break;
+    };
+    case 'won' : {
+      emoji = 'images/happy.png';
+      break;
+    }
+    case 'lost' : {
+      emoji = 'images/sad.png';
+      break;
+    }
+  };
+  ctx.drawImage(Resources.get(emoji), 205, 300);
+}
+/*
    Method to add the sarting menu in the popup when game is stopped
 */
   startMenu() {
     ctx.fillText('Hit space to start a new game',252,230);
+    ctx.fillText('Esc pause/resume game',252,265);
     ctx.fillText('Use + key to set game difficulty',252,300);
     ctx.fillStyle = this.levels[this.level];
     ctx.arc(250,350,20,0,2*Math.PI);
@@ -228,9 +251,9 @@ initGame() {
     ctx.drawImage(Resources.get(player.sprite), 205, 395);
   }
 /*
-   Method to handle the allowed keys and change the game or pass the stroked key
-   to the Player's move(key) method to have it move. Called by the keystroke
-   event listener.
+   Method to handle the allowed keys and change the game state or pass the
+   stroked key to the Player's move(key) method to have it move. Called by the
+   keystroke event listener.
 */
   handleInput(key) {
     switch (key) {
@@ -492,17 +515,13 @@ function random(min,max){
 
 *******************************************************************************/
 /*
-  Timer to be displayed in the score pannel;
-*/
-let timer = 0;
-/*
   Hold and create the instance of the game
 */
 let game = new Game;
 /*
   Hold the instance of player, will be initialized by Game.initGame() method.
 */
-let player;      // Default start position and null speed
+let player;
 /*
   Array which will hold the instances of enemies, will be initialized by
   Game.initGame() method.
