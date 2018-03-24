@@ -41,11 +41,12 @@ Purpose of the project was to use object oriented code. This realisation is orga
     - Player: the player.
     - Gem: gems to be collected.
 
-Graphic animations are made with with the use of canvas and a game engine provided by Udacity.
+Graphic animations are made with the use of canvas and a game engine provided by Udacity.
 
 ### Documentation ###
 The following diagrams show the organisation of project. See comments in source files for more detailed information on algorythm used.
 <center><img src="images/directory tree.svg">
+<center><img src="images/sequence diagram.svg">
 <center><img src="images/class diagram.svg">
 
 ### Author ###
